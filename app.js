@@ -1,10 +1,11 @@
-const debug = require("debug")("app");
+const debug = require("debug")("app:app.js");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 
 const app = express();
 
+// Mongoose
 (async () => {
   try {
     mongoose.connection.on("error", (err) => debug(err));
@@ -21,6 +22,9 @@ const app = express();
     debug(error);
   }
 })();
+
+// Routes
+app.use("/articles", require("./routes/articles"));
 
 app.listen(process.env.PORT, () => {
   debug(`'blog-api' listening on port ${process.env.PORT}`);

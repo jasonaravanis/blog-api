@@ -4,7 +4,7 @@
   "description": "A backend API for my personal blog. An assignment for The Odin Project.",
   "main": "app.js",
   "scripts": {
-    "devstart": "DEBUG=app nodemon app.js"
+    "devstart": "DEBUG=app:* nodemon app.js"
   },
   "repository": {
     "type": "git",
