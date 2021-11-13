@@ -1,8 +1,26 @@
 const debug = require("debug")("app");
 require("dotenv").config();
+const mongoose = require("mongoose");
 const express = require("express");
 
 const app = express();
+
+(async () => {
+  try {
+    mongoose.connection.on("error", (err) => debug(err));
+    mongoose.connection.on("connecting", () => debug("Mongoose connecting..."));
+    mongoose.connection.on("connected", () => debug("Mongoose connected"));
+    mongoose.connection.on("disconnected", () =>
+      debug("Mongoose disconnected")
+    );
+    await mongoose.connect(
+      `mongodb+srv://admin:${process.env.MONGODB_PW}@cluster0.a6gzm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+    );
+  } catch (error) {
+    debug(`MONGOOSE ERROR:`);
+    debug(error);
+  }
+})();
 
 app.listen(process.env.PORT, () => {
   debug(`'blog-api' listening on port ${process.env.PORT}`);
