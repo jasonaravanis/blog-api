@@ -1,0 +1,28 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "A backend API for my personal blog. An assignment for The Odin Project.",
+  "main": "app.js",
+  "scripts": {
+    "devstart": "DEBUG=app nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atlas-1510/blog-api.git"
+  },
+  "author": "Jason Aravanis (https://github.com/Atlas-1510)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Atlas-1510/blog-api/issues"
+  },
+  "homepage": "https://github.com/Atlas-1510/blog-api#readme",
+  "dependencies": {
+    "debug": "^4.3.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
