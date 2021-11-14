@@ -3,7 +3,9 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 
+// Express Initialisation
 const app = express();
+app.use(express.urlencoded({ extended: false }));
 
 // Mongoose
 (async () => {
