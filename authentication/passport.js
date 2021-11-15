@@ -8,25 +8,21 @@ const debug = require("debug")("app:authentication/passport.js");
 
 module.exports = function (passport) {
   passport.use(
-    new LocalStrategy(function (username, password, cb) {
-      User.findOne({ username }).exec((err, user) => {
-        if (err) {
-          return cb(err);
-        } else if (!user) {
+    new LocalStrategy(async function (username, password, cb) {
+      try {
+        const user = await User.findOne({ username });
+        if (!user) {
           return cb(null, false, { message: "Username not found" });
-        } else {
-          bcrypt.compare(password, user.password, (err, result) => {
-            debug(err, result);
-            if (err) {
-              return cb(err);
-            } else if (!result) {
-              return cb(null, false, { message: "Incorrect password" });
-            } else {
-              return cb(null, user, { message: "You are now logged in" });
-            }
-          });
         }
-      });
+        const loginSuccess = await bcrypt.compare(password, user.password);
+        if (loginSuccess) {
+          return cb(null, user, { message: "You are now logged in" });
+        } else {
+          return cb(null, false, { message: "Incorrect password" });
+        }
+      } catch (err) {
+        return cb(err);
+      }
     })
   );
 
