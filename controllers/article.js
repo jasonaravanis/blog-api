@@ -25,7 +25,7 @@ exports.post_article = async (req, res, next) => {
 
     res.json(article);
   } catch (err) {
-    res.json(err);
+    next(err);
   }
 };
 
@@ -58,7 +58,7 @@ exports.put_article = async (req, res, next) => {
       article: updatedArticle,
     });
   } catch (err) {
-    res.json(err);
+    next(err);
   }
 };
 
@@ -71,6 +71,6 @@ exports.delete_article = async (req, res, next) => {
       confirmation,
     });
   } catch (err) {
-    res.json(err);
+    next(err);
   }
 };
