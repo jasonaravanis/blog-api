@@ -2,6 +2,7 @@ const debug = require("debug")("app:app.js");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
+const passport = require("passport");
 
 // Express Initialisation
 const app = express();
@@ -25,7 +26,12 @@ app.use(express.urlencoded({ extended: false }));
   }
 })();
 
+// Passport
+require("./authentication/passport")(passport);
+app.use(passport.initialize());
+
 // Routes
+app.use("/login", require("./routes/login"));
 app.use("/articles", require("./routes/articles"));
 
 app.listen(process.env.PORT, () => {
