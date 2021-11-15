@@ -34,6 +34,11 @@ app.use(passport.initialize());
 app.use("/login", require("./routes/login"));
 app.use("/articles", require("./routes/articles"));
 
+// Error handling
+app.use((err, req, res, next) => {
+  res.json(err);
+});
+
 app.listen(process.env.PORT, () => {
   debug(`'blog-api' listening on port ${process.env.PORT}`);
 });

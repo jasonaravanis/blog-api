@@ -7,11 +7,15 @@ const debug = require("debug")("app:routes/login.js");
 /* POST login. */
 router.post("/", function (req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
-    if (err || !user) {
-      return res.status(400).json({
-        message: "Something is not right",
-        user: user,
-      });
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      const error = {
+        status: 401,
+        message: info.message,
+      };
+      return next(error);
     }
 
     req.login(user, { session: false }, (err) => {

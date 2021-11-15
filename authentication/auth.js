@@ -8,7 +8,10 @@ module.exports = {
       { session: false },
       function (err, user, info) {
         if (!user || err) {
-          res.json({ error: info.message });
+          const error = {};
+          error.message = info.message;
+          error.status = 401;
+          return next(error);
         } else {
           return next();
         }

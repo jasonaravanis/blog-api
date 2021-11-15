@@ -20,6 +20,8 @@ module.exports = function (passport) {
     })
   );
 
+  // TODO: implement bcrypt password hashing above
+
   passport.use(
     new JWTStrategy(
       {
