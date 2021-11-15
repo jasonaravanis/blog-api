@@ -1,17 +1,16 @@
 const Article = require("../models/Article");
 const debug = require("debug")("app:controllers/article.js");
 
-exports.get_articles = (req, res, next) => {
-  Article.find().exec((err, articles) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json({
-        message: "Recieved request to GET ARTICLES (all articles)",
-        articles,
-      });
-    }
-  });
+exports.get_articles = async (req, res, next) => {
+  try {
+    const articles = await Article.find().exec();
+    res.json({
+      message: "Recieved request to GET ARTICLES (all articles)",
+      articles,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.post_article = async (req, res, next) => {
@@ -30,18 +29,17 @@ exports.post_article = async (req, res, next) => {
   }
 };
 
-exports.get_article = (req, res, next) => {
-  const articleID = req.params.articleID;
-  Article.findById(articleID).exec((err, article) => {
-    if (err) {
-      next(err);
-    } else {
-      res.json({
-        message: `Recieved GET request for ARTICLE with ID of: ${articleID}`,
-        article,
-      });
-    }
-  });
+exports.get_article = async (req, res, next) => {
+  try {
+    const articleID = req.params.articleID;
+    const article = await Article.findById(articleID).exec();
+    res.json({
+      message: `Recieved GET request for ARTICLE with ID of: ${articleID}`,
+      article,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.put_article = async (req, res, next) => {
