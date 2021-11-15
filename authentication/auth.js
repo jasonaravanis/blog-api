@@ -5,44 +5,37 @@ const jwt = require("jsonwebtoken");
 const debug = require("debug")("app:/authentication/auth.js");
 
 module.exports = {
-  signup: function (req, res, next) {
-    if (!req.body.username || !req.body.password) {
-      const error = {
-        status: "Username and password required",
-        message: 401,
-      };
-      return next(error);
-    } else {
-      User.findOne({ username: req.body.username }).exec((err, user) => {
-        if (err) {
-          return next(err);
-        }
-        if (user) {
-          const alert = {
-            message:
-              "That username is already in use. Please pick a different username.",
-          };
-          res.status(200).json(alert);
-        } else {
-          bcrypt.hash(req.body.password, 10, (err, result) => {
-            if (err) {
-              return next(err);
-            } else {
-              const user = new User({
-                username: req.body.username,
-                password: result,
-              });
-              user.save((err, doc) => {
-                if (err) {
-                  return next(err);
-                } else {
-                  res.json(doc);
-                }
-              });
-            }
-          });
-        }
+  signup: async function (req, res, next) {
+    try {
+      if (!req.body.username || !req.body.password) {
+        const error = {
+          status: "Username and password required",
+          message: 401,
+        };
+        return next(error);
+      }
+
+      const existingUser = await User.findOne({
+        username: req.body.username,
+      }).exec();
+
+      if (existingUser) {
+        const alert = {
+          message:
+            "That username is already in use. Please pick a different username.",
+        };
+        res.status(200).json(alert);
+      }
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      const user = new User({
+        username: req.body.username,
+        password: hashedPassword,
       });
+      const newUser = await user.save();
+      res.json(newUser);
+    } catch (err) {
+      return next(err);
     }
   },
   login: function (req, res, next) {
