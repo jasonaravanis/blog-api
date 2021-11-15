@@ -15,8 +15,7 @@ module.exports = function (passport) {
         } else if (!user) {
           return cb(null, false, { message: "Username not found" });
         } else {
-          // TODO: Check this works after implement hashing on sign up
-          bcrypt.compare(user.password, password, (err, result) => {
+          bcrypt.compare(password, user.password, (err, result) => {
             debug(err, result);
             if (err) {
               return cb(err);

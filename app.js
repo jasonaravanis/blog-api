@@ -31,7 +31,7 @@ require("./authentication/passport")(passport);
 app.use(passport.initialize());
 
 // Routes
-app.use("/login", require("./routes/login"));
+app.use("/", require("./routes/index"));
 app.use("/articles", require("./routes/articles"));
 
 // Error handling
