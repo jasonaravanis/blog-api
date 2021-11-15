@@ -8,15 +8,19 @@ const { ensureAuthenticated } = require("../authentication/auth");
 router.get("/", ensureAuthenticated, articleController.get_articles);
 
 // POST an article
-router.post("/", articleController.post_article);
+router.post("/", ensureAuthenticated, articleController.post_article);
 
 // GET a specific article
-router.get("/:articleID", articleController.get_article);
+router.get("/:articleID", ensureAuthenticated, articleController.get_article);
 
 // PUT an article (update an article)
-router.put("/:articleID", articleController.put_article);
+router.put("/:articleID", ensureAuthenticated, articleController.put_article);
 
 // DELETE an article
-router.delete("/:articleID", articleController.delete_article);
+router.delete(
+  "/:articleID",
+  ensureAuthenticated,
+  articleController.delete_article
+);
 
 module.exports = router;
