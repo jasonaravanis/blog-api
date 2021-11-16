@@ -3,10 +3,14 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 const passport = require("passport");
+const cors = require("cors");
 
 // Express Initialisation
 const app = express();
 app.use(express.urlencoded({ extended: false }));
+
+// CORS
+app.use(cors());
 
 // Mongoose
 (async () => {
