@@ -5,7 +5,7 @@ const router = express.Router();
 const { ensureAuthenticated } = require("../authentication/auth");
 
 // GET all articles
-router.get("/", ensureAuthenticated, articleController.get_articles);
+router.get("/", articleController.get_articles);
 
 // POST an article
 router.post("/", ensureAuthenticated, articleController.post_article);
