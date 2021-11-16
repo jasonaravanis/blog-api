@@ -36,10 +36,7 @@ const validateArticleInput = [
 exports.get_articles = async (req, res, next) => {
   try {
     const articles = await Article.find().exec();
-    res.json({
-      message: "Recieved request to GET ARTICLES (all articles)",
-      articles,
-    });
+    res.json(articles);
   } catch (err) {
     next(err);
   }
@@ -68,10 +65,7 @@ exports.get_article = async (req, res, next) => {
   try {
     const articleID = req.params.articleID;
     const article = await Article.findById(articleID).exec();
-    res.json({
-      message: `Recieved GET request for ARTICLE with ID of: ${articleID}`,
-      article,
-    });
+    res.json(article);
   } catch (err) {
     next(err);
   }
@@ -83,7 +77,7 @@ exports.put_article = [
     try {
       const articleID = req.params.articleID;
       const article = await Article.findById(articleID);
-      if (req.user.id != article.author) {
+      if (req.user._id != article.author) {
         return res.json({
           message: "Only original author or admin can edit articles.",
         });
@@ -95,10 +89,7 @@ exports.put_article = [
         }
       });
       const updatedArticle = await article.save();
-      res.json({
-        message: `Recieved PUT request to update the ARTICLE with ID of: ${articleID}`,
-        article: updatedArticle,
-      });
+      res.json(updatedArticle);
     } catch (err) {
       next(err);
     }
@@ -106,19 +97,17 @@ exports.put_article = [
 ];
 
 exports.delete_article = async (req, res, next) => {
+  // TODO: Make sure all article comments are deleted when an article is deleted.
   try {
     const articleID = req.params.articleID;
     const article = await Article.findById(articleID).exec();
-    if (req.user.id != article.author) {
+    if (req.user._id != article.author) {
       return res.json({
         message: "Only original author or admin can edit articles.",
       });
     }
     const confirmation = await Article.deleteOne({ id: articleID });
-    res.json({
-      message: `Recieved DELETE request for ARTICLE with ID of: ${articleID}`,
-      confirmation,
-    });
+    res.json(confirmation);
   } catch (err) {
     next(err);
   }
