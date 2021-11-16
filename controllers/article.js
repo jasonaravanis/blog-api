@@ -1,4 +1,5 @@
 const Article = require("../models/Article");
+const Comment = require("../models/Comment");
 const { body, validationResult } = require("express-validator");
 const debug = require("debug")("app:controllers/article.js");
 
@@ -107,6 +108,9 @@ exports.delete_article = async (req, res, next) => {
       });
     }
     const confirmation = await Article.deleteOne({ id: articleID });
+    if (confirmation) {
+      await Comment.deleteMany({ article: articleID });
+    }
     return res.json(confirmation);
   } catch (err) {
     next(err);
