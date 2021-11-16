@@ -17,7 +17,7 @@ exports.post_comment = async (req, res, next) => {
     const comment = new Comment({
       date: Date.now(),
       content: req.body.content,
-      author: req.body.author,
+      author: req.user._id,
       article: req.body.article,
     });
     const doc = await comment.save();

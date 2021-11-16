@@ -73,7 +73,7 @@ module.exports = {
           error.status = 401;
           return next(error);
         } else {
-          req.user = user;
+          req.user = { ...user.user, iat: user.iat };
           return next();
         }
       }

@@ -19,7 +19,7 @@ exports.post_article = async (req, res, next) => {
       title: req.body.title,
       description: req.body.description,
       content: req.body.content,
-      author: req.body.author,
+      author: req.user._id,
       date: Date.now(),
     }).save();
 
@@ -46,6 +46,11 @@ exports.put_article = async (req, res, next) => {
   try {
     const articleID = req.params.articleID;
     const article = await Article.findById(articleID);
+    if (req.user.id != article.author) {
+      return res.json({
+        message: "Only original author or admin can edit articles.",
+      });
+    }
     const articleFields = Object.keys(Article.schema.paths);
     articleFields.map((field) => {
       if (req.body[field]) {
@@ -65,6 +70,12 @@ exports.put_article = async (req, res, next) => {
 exports.delete_article = async (req, res, next) => {
   try {
     const articleID = req.params.articleID;
+    const article = await Article.findById(articleID).exec();
+    if (req.user.id != article.author) {
+      return res.json({
+        message: "Only original author or admin can edit articles.",
+      });
+    }
     const confirmation = await Article.deleteOne({ id: articleID });
     res.json({
       message: `Recieved DELETE request for ARTICLE with ID of: ${articleID}`,

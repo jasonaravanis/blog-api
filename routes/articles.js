@@ -11,7 +11,7 @@ router.get("/", articleController.get_articles);
 router.post("/", ensureAuthenticated, articleController.post_article);
 
 // GET a specific article
-router.get("/:articleID", ensureAuthenticated, articleController.get_article);
+router.get("/:articleID", articleController.get_article);
 
 // PUT an article (update an article)
 router.put("/:articleID", ensureAuthenticated, articleController.put_article);
