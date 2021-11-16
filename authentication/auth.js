@@ -9,8 +9,8 @@ module.exports = {
     try {
       if (!req.body.username || !req.body.password) {
         const error = {
-          status: "Username and password required",
-          message: 401,
+          message: "Username and password required",
+          status: 401,
         };
         return next(error);
       }
@@ -73,6 +73,7 @@ module.exports = {
           error.status = 401;
           return next(error);
         } else {
+          req.user = user;
           return next();
         }
       }

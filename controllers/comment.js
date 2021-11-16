@@ -1,4 +1,5 @@
 const Comment = require("../models/Comment");
+const debug = require("debug")("app:controllers/comment.js");
 
 exports.get_comments = async (req, res, next) => {
   try {
@@ -27,10 +28,14 @@ exports.post_comment = async (req, res, next) => {
 };
 
 exports.put_comment = async (req, res, next) => {
-  // The only updatable field for a comment is the content.
-  // Author, article, and date must remain unchanged.
+  // The only updatable field for a comment is the content. Author, article, and date must remain unchanged.
   try {
     const comment = await Comment.findById(req.params.commentID).exec();
+    if (req.user._id != comment.author) {
+      return res.json({
+        message: "Update failed, only comment author can update this comment.",
+      });
+    }
     if (req.body.content) {
       comment.content = req.body.content;
     }
@@ -43,9 +48,17 @@ exports.put_comment = async (req, res, next) => {
 
 exports.delete_comment = async (req, res, next) => {
   try {
+    const comment = await Comment.findById(req.params.commentID).exec();
+    if (req.user._id != comment.author) {
+      return res.json({
+        message:
+          "Delete failed, only comment author or admin can remove this comment.",
+      });
+    }
     const confirmation = await Comment.deleteOne({
       id: req.params.commentID,
     }).exec();
+
     res.json(confirmation);
   } catch (err) {
     return next(err);

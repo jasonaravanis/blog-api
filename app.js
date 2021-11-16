@@ -37,7 +37,7 @@ app.use("/comments", require("./routes/comments"));
 
 // Error handling
 app.use((err, req, res, next) => {
-  res.json(err);
+  res.status(err.status).json(err);
 });
 
 app.listen(process.env.PORT, () => {
