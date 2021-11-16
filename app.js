@@ -33,6 +33,7 @@ app.use(passport.initialize());
 // Routes
 app.use("/", require("./routes/index"));
 app.use("/articles", require("./routes/articles"));
+app.use("/comments", require("./routes/comments"));
 
 // Error handling
 app.use((err, req, res, next) => {
