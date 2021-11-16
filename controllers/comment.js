@@ -1,5 +1,27 @@
 const Comment = require("../models/Comment");
+const { body, validationResult } = require("express-validator");
 const debug = require("debug")("app:controllers/comment.js");
+
+const validateCommentInput = [
+  body("content")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("Comment can not be empty.")
+    .isLength({ max: 250 })
+    .withMessage("Maximum comment length is 250 characters")
+    .escape(),
+  (req, res, next) => {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.json({
+        formInput: req.body,
+        errors: validationErrors.array(),
+      });
+    } else {
+      next();
+    }
+  },
+];
 
 exports.get_comments = async (req, res, next) => {
   try {
@@ -12,39 +34,46 @@ exports.get_comments = async (req, res, next) => {
   }
 };
 
-exports.post_comment = async (req, res, next) => {
-  try {
-    const comment = new Comment({
-      date: Date.now(),
-      content: req.body.content,
-      author: req.user._id,
-      article: req.body.article,
-    });
-    const doc = await comment.save();
-    res.json(doc);
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.put_comment = async (req, res, next) => {
-  // The only updatable field for a comment is the content. Author, article, and date must remain unchanged.
-  try {
-    const comment = await Comment.findById(req.params.commentID).exec();
-    if (req.user._id != comment.author) {
-      return res.json({
-        message: "Update failed, only comment author can update this comment.",
+exports.post_comment = [
+  validateCommentInput,
+  async (req, res, next) => {
+    try {
+      const comment = new Comment({
+        date: Date.now(),
+        content: req.body.content,
+        author: req.user._id,
+        article: req.body.article,
       });
+      const doc = await comment.save();
+      res.json(doc);
+    } catch (err) {
+      return next(err);
     }
-    if (req.body.content) {
-      comment.content = req.body.content;
+  },
+];
+
+exports.put_comment = [
+  validateCommentInput,
+  async (req, res, next) => {
+    // The only updatable field for a comment is the content. Author, article, and date must remain unchanged.
+    try {
+      const comment = await Comment.findById(req.params.commentID).exec();
+      if (req.user._id != comment.author) {
+        return res.json({
+          message:
+            "Update failed, only comment author can update this comment.",
+        });
+      }
+      if (req.body.content) {
+        comment.content = req.body.content;
+      }
+      const updatedComment = await comment.save();
+      res.json(updatedComment);
+    } catch (err) {
+      return next(err);
     }
-    const updatedComment = await comment.save();
-    res.json(updatedComment);
-  } catch (err) {
-    return next(err);
-  }
-};
+  },
+];
 
 exports.delete_comment = async (req, res, next) => {
   try {
