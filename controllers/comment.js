@@ -45,7 +45,7 @@ exports.post_comment = [
         article: req.body.article,
       });
       const doc = await comment.save();
-      res.json(doc);
+      return res.json(doc);
     } catch (err) {
       return next(err);
     }
@@ -68,7 +68,7 @@ exports.put_comment = [
         comment.content = req.body.content;
       }
       const updatedComment = await comment.save();
-      res.json(updatedComment);
+      return res.json(updatedComment);
     } catch (err) {
       return next(err);
     }
@@ -88,7 +88,7 @@ exports.delete_comment = async (req, res, next) => {
       id: req.params.commentID,
     }).exec();
 
-    res.json(confirmation);
+    return res.json(confirmation);
   } catch (err) {
     return next(err);
   }

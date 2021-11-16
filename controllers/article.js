@@ -36,7 +36,7 @@ const validateArticleInput = [
 exports.get_articles = async (req, res, next) => {
   try {
     const articles = await Article.find().exec();
-    res.json(articles);
+    return res.json(articles);
   } catch (err) {
     next(err);
   }
@@ -54,7 +54,7 @@ exports.post_article = [
         date: Date.now(),
       }).save();
 
-      res.json(article);
+      return res.json(article);
     } catch (err) {
       next(err);
     }
@@ -65,7 +65,7 @@ exports.get_article = async (req, res, next) => {
   try {
     const articleID = req.params.articleID;
     const article = await Article.findById(articleID).exec();
-    res.json(article);
+    return res.json(article);
   } catch (err) {
     next(err);
   }
@@ -89,7 +89,7 @@ exports.put_article = [
         }
       });
       const updatedArticle = await article.save();
-      res.json(updatedArticle);
+      return res.json(updatedArticle);
     } catch (err) {
       next(err);
     }
@@ -107,7 +107,7 @@ exports.delete_article = async (req, res, next) => {
       });
     }
     const confirmation = await Article.deleteOne({ id: articleID });
-    res.json(confirmation);
+    return res.json(confirmation);
   } catch (err) {
     next(err);
   }
