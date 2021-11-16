@@ -1,5 +1,37 @@
 const Article = require("../models/Article");
+const { body, validationResult } = require("express-validator");
 const debug = require("debug")("app:controllers/article.js");
+
+const validateArticleInput = [
+  body("title")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("Article title required")
+    .isLength({ max: 100 })
+    .escape(),
+  body("description")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("Article description required")
+    .isLength({ max: 100 })
+    .escape(),
+  body("content")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("Article content required")
+    .escape(),
+  (req, res, next) => {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.json({
+        formInput: req.body,
+        errors: validationErrors.array(),
+      });
+    } else {
+      return next();
+    }
+  },
+];
 
 exports.get_articles = async (req, res, next) => {
   try {
@@ -13,21 +45,24 @@ exports.get_articles = async (req, res, next) => {
   }
 };
 
-exports.post_article = async (req, res, next) => {
-  try {
-    const article = await new Article({
-      title: req.body.title,
-      description: req.body.description,
-      content: req.body.content,
-      author: req.user._id,
-      date: Date.now(),
-    }).save();
+exports.post_article = [
+  validateArticleInput,
+  async (req, res, next) => {
+    try {
+      const article = await new Article({
+        title: req.body.title,
+        description: req.body.description,
+        content: req.body.content,
+        author: req.user._id,
+        date: Date.now(),
+      }).save();
 
-    res.json(article);
-  } catch (err) {
-    next(err);
-  }
-};
+      res.json(article);
+    } catch (err) {
+      next(err);
+    }
+  },
+];
 
 exports.get_article = async (req, res, next) => {
   try {
@@ -42,30 +77,33 @@ exports.get_article = async (req, res, next) => {
   }
 };
 
-exports.put_article = async (req, res, next) => {
-  try {
-    const articleID = req.params.articleID;
-    const article = await Article.findById(articleID);
-    if (req.user.id != article.author) {
-      return res.json({
-        message: "Only original author or admin can edit articles.",
-      });
-    }
-    const articleFields = Object.keys(Article.schema.paths);
-    articleFields.map((field) => {
-      if (req.body[field]) {
-        article[field] = req.body[field];
+exports.put_article = [
+  validateArticleInput,
+  async (req, res, next) => {
+    try {
+      const articleID = req.params.articleID;
+      const article = await Article.findById(articleID);
+      if (req.user.id != article.author) {
+        return res.json({
+          message: "Only original author or admin can edit articles.",
+        });
       }
-    });
-    const updatedArticle = await article.save();
-    res.json({
-      message: `Recieved PUT request to update the ARTICLE with ID of: ${articleID}`,
-      article: updatedArticle,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+      const articleFields = Object.keys(Article.schema.paths);
+      articleFields.map((field) => {
+        if (req.body[field]) {
+          article[field] = req.body[field];
+        }
+      });
+      const updatedArticle = await article.save();
+      res.json({
+        message: `Recieved PUT request to update the ARTICLE with ID of: ${articleID}`,
+        article: updatedArticle,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+];
 
 exports.delete_article = async (req, res, next) => {
   try {
