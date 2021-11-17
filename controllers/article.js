@@ -36,7 +36,7 @@ const validateArticleInput = [
 
 exports.get_articles = async (req, res, next) => {
   try {
-    const articles = await Article.find().exec();
+    const articles = await Article.find().populate("author", "username").exec();
     return res.json(articles);
   } catch (err) {
     next(err);
