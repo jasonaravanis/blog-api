@@ -14,7 +14,7 @@ const validateArticleInput = [
     .trim()
     .exists({ checkFalsy: true })
     .withMessage("Article description required")
-    .isLength({ max: 100 })
+    .isLength({ max: 150 })
     .escape(),
   body("content")
     .trim()
@@ -65,7 +65,9 @@ exports.post_article = [
 exports.get_article = async (req, res, next) => {
   try {
     const articleID = req.params.articleID;
-    const article = await Article.findById(articleID).exec();
+    const article = await Article.findById(articleID)
+      .populate("author", "username")
+      .exec();
     return res.json(article);
   } catch (err) {
     next(err);
