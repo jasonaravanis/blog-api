@@ -7,6 +7,7 @@ const cors = require("cors");
 
 // Express Initialisation
 const app = express();
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // CORS
