@@ -8,11 +8,11 @@ module.exports = {
   signup: async function (req, res, next) {
     try {
       if (!req.body.username || !req.body.password) {
-        const error = {
+        const info = {
           message: "Username and password required",
-          status: 401,
+          status: 200,
         };
-        return next(error);
+        return res.send(info);
       }
 
       const existingUser = await User.findOne({
@@ -20,11 +20,12 @@ module.exports = {
       }).exec();
 
       if (existingUser) {
-        const alert = {
+        const info = {
+          statusCode: 200,
           message:
             "That username is already in use. Please pick a different username.",
         };
-        res.status(200).json(alert);
+        return res.send(info);
       }
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -47,12 +48,8 @@ module.exports = {
       if (err) {
         return next(err);
       }
-      if (!user) {
-        const error = {
-          status: 401,
-          message: info.message,
-        };
-        return next(error);
+      if (info) {
+        return res.send(info);
       }
 
       req.login(user, { session: false }, (err) => {

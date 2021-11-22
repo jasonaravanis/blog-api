@@ -16,7 +16,7 @@ module.exports = function (passport) {
         }
         const loginSuccess = await bcrypt.compare(password, user.password);
         if (loginSuccess) {
-          return cb(null, user, { message: "You are now logged in" });
+          return cb(null, user);
         } else {
           return cb(null, false, { message: "Incorrect password" });
         }
