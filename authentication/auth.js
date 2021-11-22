@@ -36,6 +36,7 @@ module.exports = {
       await user.save();
       const tokenPayload = {
         username: req.body.username,
+        _id: user._id,
       };
       const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
       res.json(token);
@@ -58,6 +59,7 @@ module.exports = {
         }
         const tokenPayload = {
           username: user.username,
+          _id: user._id,
         };
 
         // generate a signed json web token with the contents of user object and return it in the response
@@ -77,7 +79,7 @@ module.exports = {
           error.status = 401;
           return next(error);
         } else {
-          req.user = { ...user.user, iat: user.iat };
+          req.user = { ...user.tokenPayload, iat: user.iat };
           return next();
         }
       }
