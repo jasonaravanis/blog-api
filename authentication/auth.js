@@ -65,7 +65,7 @@ module.exports = {
 
         // generate a signed json web token with the contents of user object and return it in the response
         const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
-        return res.json({ user, token });
+        return res.json(token);
       });
     })(req, res, next);
   },
