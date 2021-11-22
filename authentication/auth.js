@@ -32,8 +32,12 @@ module.exports = {
         username: req.body.username,
         password: hashedPassword,
       });
-      const newUser = await user.save();
-      res.json(newUser);
+      await user.save();
+      const tokenPayload = {
+        username: req.body.username,
+      };
+      const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
+      res.json(token);
     } catch (err) {
       return next(err);
     }
@@ -55,9 +59,12 @@ module.exports = {
         if (err) {
           res.send(err);
         }
+        const tokenPayload = {
+          username: user.username,
+        };
 
         // generate a signed json web token with the contents of user object and return it in the response
-        const token = jwt.sign({ user }, process.env.JWT_SECRET);
+        const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
         return res.json({ user, token });
       });
     })(req, res, next);
