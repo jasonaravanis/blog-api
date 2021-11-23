@@ -8,3 +8,4 @@ This is a RESTful API for my personal blog. The API uses the following technolog
 - [Express-validator](https://express-validator.github.io/docs/) for validation of articles and comments.
 - [MongoDB](https://www.mongodb.com) for database hosting.
 - [Mongoosejs](https://mongoosejs.com) for easier integration with MongoDB.
+- [Insomnia](https://insomnia.rest) for API testing.
