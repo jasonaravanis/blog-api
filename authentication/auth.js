@@ -34,7 +34,7 @@ module.exports = {
         password: hashedPassword,
       });
 
-      const profileImage = `https://avatars.dicebear.com/api/jdenticon/${user._id}.svg`;
+      const profileImage = `https://avatars.dicebear.com/api/croodles/${user._id}.svg`;
 
       user.profileImage = profileImage;
 
