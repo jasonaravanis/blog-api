@@ -33,9 +33,15 @@ module.exports = {
         username: req.body.username,
         password: hashedPassword,
       });
+
+      const profileImage = `https://avatars.dicebear.com/api/jdenticon/${user._id}.svg`;
+
+      user.profileImage = profileImage;
+
       await user.save();
       const tokenPayload = {
         username: req.body.username,
+        profileImage,
         _id: user._id,
       };
       const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
@@ -59,6 +65,7 @@ module.exports = {
         }
         const tokenPayload = {
           username: user.username,
+          profileImage: user.profileImage,
           _id: user._id,
         };
 

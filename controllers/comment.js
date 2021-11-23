@@ -26,8 +26,11 @@ const validateCommentInput = [
 exports.get_comments = async (req, res, next) => {
   try {
     const comments = await Comment.find({
-      article: req.body.article,
-    }).exec();
+      article: req.query.articleID,
+    })
+      .populate("author", "username profileImage")
+      .sort({ date: "desc" })
+      .exec();
     res.json(comments);
   } catch (err) {
     return next(err);
