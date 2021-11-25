@@ -100,7 +100,6 @@ module.exports = {
       info.message = "This account does not have administrator credentials";
       res.send(info);
     } else {
-      req.user = { ...user.tokenPayload, iat: user.iat };
       return next();
     }
   },
