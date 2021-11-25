@@ -36,7 +36,7 @@ const validateArticleInput = [
 
 exports.get_articles = async (req, res, next) => {
   try {
-    const articles = await Article.find()
+    const articles = await Article.find({ isPublished: true })
       .populate("author", "username profileImage")
       .exec();
     return res.json(articles);
@@ -55,6 +55,7 @@ exports.post_article = [
         content: req.body.content,
         author: req.user._id,
         date: Date.now(),
+        isPublished: true,
       }).save();
 
       return res.json(article);

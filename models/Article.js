@@ -7,6 +7,7 @@ const ArticleSchema = new Schema({
   date: { type: Date, required: true },
   content: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  isPublished: { type: Boolean, required: true },
 });
 
 module.exports = mongoose.model("Article", ArticleSchema);
