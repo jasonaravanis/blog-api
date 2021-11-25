@@ -67,6 +67,37 @@ module.exports = {
         const tokenPayload = {
           username: user.username,
           profileImage: user.profileImage,
+          _id: user._id,
+        };
+
+        // generate a signed json web token with the contents of user object and return it in the response
+        const token = jwt.sign({ tokenPayload }, process.env.JWT_SECRET);
+        return res.json(token);
+      });
+    })(req, res, next);
+  },
+  adminLogin: function (req, res, next) {
+    passport.authenticate("local", { session: false }, (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      if (info) {
+        return res.send(info);
+      }
+
+      req.login(user, { session: false }, (err) => {
+        if (err) {
+          res.send(err);
+        }
+        if (!user.isAdmin) {
+          const info = {
+            message: "This account does not have administrator credentials",
+          };
+          res.send(info);
+        }
+        const tokenPayload = {
+          username: user.username,
+          profileImage: user.profileImage,
           isAdmin: user.isAdmin,
           _id: user._id,
         };
