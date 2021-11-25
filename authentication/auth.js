@@ -32,6 +32,7 @@ module.exports = {
       const user = new User({
         username: req.body.username,
         password: hashedPassword,
+        isAdmin: false,
       });
 
       const profileImage = `https://avatars.dicebear.com/api/croodles/${user._id}.svg`;
@@ -66,6 +67,7 @@ module.exports = {
         const tokenPayload = {
           username: user.username,
           profileImage: user.profileImage,
+          isAdmin: user.isAdmin,
           _id: user._id,
         };
 
@@ -91,5 +93,15 @@ module.exports = {
         }
       }
     )(req, res, next);
+  },
+  ensureAdmin: function (req, res, next) {
+    if (!req.user.isAdmin) {
+      const info = {};
+      info.message = "This account does not have administrator credentials";
+      res.send(info);
+    } else {
+      req.user = { ...user.tokenPayload, iat: user.iat };
+      return next();
+    }
   },
 };
