@@ -3,6 +3,9 @@ const Comment = require("../models/Comment");
 const { body, validationResult } = require("express-validator");
 const debug = require("debug")("app:controllers/article.js");
 
+// TODO: Add html parsing to prevent XSS attacks. Previously removed '.escape()' from article content validation in 'validateArticleInput' middleware
+// in order to enable html to be parsed on client side with correct styling.
+
 const validateArticleInput = [
   body("title")
     .trim()
@@ -19,8 +22,7 @@ const validateArticleInput = [
   body("content")
     .trim()
     .exists({ checkFalsy: true })
-    .withMessage("Article content required")
-    .escape(),
+    .withMessage("Article content required"),
   (req, res, next) => {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
@@ -66,7 +68,7 @@ exports.post_article = [
         content: req.body.content,
         author: req.user._id,
         date: Date.now(),
-        isPublished: true,
+        isPublished: req.body.isPublished || true,
       }).save();
 
       return res.json(article);
@@ -101,7 +103,7 @@ exports.put_article = [
       }
       const articleFields = Object.keys(Article.schema.paths);
       articleFields.map((field) => {
-        if (req.body[field]) {
+        if (field in req.body) {
           article[field] = req.body[field];
         }
       });
