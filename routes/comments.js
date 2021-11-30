@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const commentController = require("../controllers/comment");
-const { ensureAuthenticated } = require("../authentication/auth");
+const { ensureAuthenticated, ensureAdmin } = require("../authentication/auth");
 
 // Requests for comments will typically be made in conjunction with a request for an article.
 // So a request will be made with a specific articleID parameter in the request body.
@@ -19,6 +19,7 @@ router.put("/:commentID", ensureAuthenticated, commentController.put_comment);
 router.delete(
   "/:commentID",
   ensureAuthenticated,
+  ensureAdmin,
   commentController.delete_comment
 );
 

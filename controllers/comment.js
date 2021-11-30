@@ -80,13 +80,6 @@ exports.put_comment = [
 
 exports.delete_comment = async (req, res, next) => {
   try {
-    const comment = await Comment.findById(req.params.commentID).exec();
-    if (req.user._id != comment.author) {
-      return res.json({
-        message:
-          "Delete failed, only comment author or admin can remove this comment.",
-      });
-    }
     const confirmation = await Comment.deleteOne({
       id: req.params.commentID,
     }).exec();
