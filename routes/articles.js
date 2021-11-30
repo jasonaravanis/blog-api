@@ -5,7 +5,15 @@ const router = express.Router();
 const { ensureAuthenticated, ensureAdmin } = require("../authentication/auth");
 
 // GET all published articles (public view)
-router.get("/", articleController.get_articles);
+router.get("/", articleController.get_published_articles);
+
+// GET all articles (including unpublished) (admin view only)
+router.get(
+  "/overview",
+  ensureAuthenticated,
+  ensureAdmin,
+  articleController.get_articles
+);
 
 // POST an article
 router.post(
