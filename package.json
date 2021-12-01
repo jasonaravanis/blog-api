@@ -4,6 +4,7 @@
   "description": "A backend API for my personal blog. An assignment for The Odin Project.",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "devstart": "DEBUG=app:* nodemon app.js"
   },
   "repository": {
@@ -31,5 +32,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
