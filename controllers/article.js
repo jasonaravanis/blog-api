@@ -125,7 +125,7 @@ exports.delete_article = async (req, res, next) => {
         message: "Only original author or admin can edit articles.",
       });
     }
-    const confirmation = await Article.deleteOne({ id: articleID });
+    const confirmation = await Article.findByIdAndDelete(articleID);
     if (confirmation) {
       await Comment.deleteMany({ article: articleID });
     }
