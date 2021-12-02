@@ -68,7 +68,10 @@ exports.post_article = [
         content: req.body.content,
         author: req.user._id,
         date: Date.now(),
-        isPublished: req.body.isPublished || true,
+        isPublished:
+          typeof req.body.isPublished === "undefined"
+            ? true
+            : req.body.isPublished,
       }).save();
 
       return res.json(article);
